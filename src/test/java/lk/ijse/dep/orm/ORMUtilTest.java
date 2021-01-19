@@ -1,15 +1,21 @@
 package lk.ijse.dep.orm;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.*;
-
 public class ORMUtilTest {
+
+    private static Properties properties = new Properties();
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        properties.load(ORMUtilTest.class.getResourceAsStream("/application.properties"));
+    }
 
     @Test
     public void init() {
-        ORMUtil.init(new Properties(), Customer.class, Item.class);
+        ORMUtil.init(properties, Customer.class, Item.class);
     }
 }
