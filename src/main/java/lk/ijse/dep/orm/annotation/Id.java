@@ -1,4 +1,4 @@
-package lk.ijse.dep.orm;
+package lk.ijse.dep.orm.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
