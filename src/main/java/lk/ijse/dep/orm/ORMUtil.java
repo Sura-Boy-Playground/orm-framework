@@ -18,16 +18,19 @@ public class ORMUtil {
         String driverClassName = dbProperties.getProperty("javax.persistence.jdbc.driver_class");
 
         if (username == null || password == null || url == null || driverClassName == null) {
-            throw new RuntimeException("Unable to initialize ORM framework without user-name, password, url, and driver");
+//            throw new RuntimeException("Unable to initialize ORM framework without user-name, password, url, and driver");
         }
 
         for (Class entity : entities) {
+            boolean pk = false;
             Annotation entityAnnotation = entity.getDeclaredAnnotation(Entity.class);
+
             if (entityAnnotation == null) {
                 throw new RuntimeException("Invalid entity class: " + entity.getName());
             }
 
-            String ddl = "CREATE TABLE " + entity.getName() + " (\n";
+            String[] split = entity.getName().split("[.]");
+            String ddl = "CREATE TABLE " +  split[split.length - 1] + " (\n";
 
             Field[] declaredFields = entity.getDeclaredFields();
             for (Field declaredField : declaredFields) {
@@ -53,7 +56,11 @@ public class ORMUtil {
                     }
                     ddl += columnName + " " + columnDef;
 
+                    if (pk && idAnnotation != null){
+                        throw new RuntimeException("Composite keys are not supported yet");
+                    }
                     if (idAnnotation != null){
+                        pk = true;
                         ddl += " PRIMARY KEY";
                     }
                     ddl += ",\n";
@@ -61,6 +68,7 @@ public class ORMUtil {
             }
 
             ddl += ");";
+            System.out.println(ddl);
         }
     }
 
